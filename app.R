@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(glue)
 library(googleVis)
+library(scales)
 source('functions.R')
 url1 <- 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'
 url2 <- 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'
@@ -98,6 +99,12 @@ ui <- fluidPage(
                  tags$br(),
                  format(kpi.values$death, big.mark = ','),
                  tags$sup(glue("({format(kpi.values$death_new, big.mark = ',')} new)"))
+        ),
+        tags$div(class = 'valueBox',
+                 id = 'death',
+                 'Mortality Rate',
+                 tags$br(),
+                 scales::percent(kpi.values$mortality.rate, 0.1)
         )
     ),
     tags$hr(),
@@ -197,7 +204,13 @@ server <- function(input, output) {
                      'Total Death',
                      tags$br(),
                      format(kpi.country()$death, big.mark = ','),
-                     tags$sup(glue("({format(kpi.country()$death_new, big.mark = ',')} new)")))
+                     tags$sup(glue("({format(kpi.country()$death_new, big.mark = ',')} new)"))),
+            tags$div(class = 'valueBox',
+                     id = 'death',
+                     'Mortality Rate',
+                     tags$br(),
+                     scales::percent(kpi.country()$mortality.rate, 0.1)
+            )
         )
     })
 }

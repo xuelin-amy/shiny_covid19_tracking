@@ -178,7 +178,8 @@ get.kpi <- function(df.country, country = NULL){
     confirmed_new = confirmed_new,
     recovered_new = recovered_new,
     death_new = death_new,
-    updated.date = updated.date
+    updated.date = updated.date,
+    mortality.rate = round(death / confirmed,3)
   ))
   
 }
@@ -193,14 +194,13 @@ plot.world.table <- function(df.country, pageSize = 20, width = 1200){
     left_join(Population %>% select(Country, Flag), 
               by = c('Country.Region' = 'Country')) %>%
     select(-date) %>%
+    mutate(mortality.rate = death / confirmed) %>%
     select(Flag, everything())
-  res <- res %>%
-    mutate(recovered = fill.na(recovered, 'TBC'),
-           recovered_new = fill.na(recovered_new, 'TBC'))
   
   gvisTable(res,
              formats=list(confirmed="#,###",
-                          death = "#,###"),
+                          death = "#,###",
+                          mortality.rate = "#.#%"),
              options = list(page = 'enable',
                             pageSize = pageSize,
                             width = width))
